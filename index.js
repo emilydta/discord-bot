@@ -1,6 +1,6 @@
 import * as eventsObj from './events/index.js';
 import dotenv from 'dotenv';
-import { Client, GatewayIntentBits } from 'discord.js';
+import { Client, GatewayIntentBits, Partials } from 'discord.js';
 
 const { NODE_ENV } = process.env;
 
@@ -18,7 +18,13 @@ const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMessageReactions,
         GatewayIntentBits.MessageContent,
+    ],
+    partials: [
+      Partials.Message, 
+      Partials.Channel, 
+      Partials.Reaction
     ]
 });
 
