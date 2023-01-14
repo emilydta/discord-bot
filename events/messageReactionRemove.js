@@ -3,13 +3,13 @@ import {
     uploadsEmoji,
     eventsEmoji,
 } from "../models/roleEmojis.js";
-import channel from '../models/roleReactionChannelId.js'
+import { rolesChannel } from '../models/discordChannelIds.js'
 
 export default {
     name: 'messageReactionRemove',
     async execute(reaction, user) {
         //For reaction roles only
-        if (user.bot || reaction.message.channel.id !== channel) {
+        if (user.bot || reaction.message.channel.id !== rolesChannel) {
             return
         } else {
             const announcementsRole = reaction.message.guild.roles.cache.find(role => role.name === announcementsEmoji);

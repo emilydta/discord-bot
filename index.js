@@ -1,6 +1,12 @@
 import * as eventsObj from './events/index.js';
 import dotenv from 'dotenv';
 import { Client, GatewayIntentBits, Partials } from 'discord.js';
+import fs from 'fs';
+import readline from 'readline';
+import { google } from 'googleapis';
+import youtubeCheck from './youtubeCheck.js';
+import { uploadsChannel } from './models/discordChannelIds.js';
+var OAuth2 = google.auth.OAuth2;
 
 const { NODE_ENV } = process.env;
 
@@ -13,6 +19,7 @@ if (NODE_ENV === 'development') {
 }
 
 const token = process.env.TOKEN;
+const playlistId = process.env.PLAYLIST_ID;
 
 const client = new Client({
     intents: [
@@ -36,5 +43,8 @@ events.forEach((event) => {
 });
 
 client.login(token);
+
+youtubeCheck(client, fs, readline, google, OAuth2, playlistId, uploadsChannel);
+setInterval(function() {youtubeCheck(client, fs, readline, google, OAuth2, playlistId, uploadsChannel)}, 600000);
 
 export default client;
