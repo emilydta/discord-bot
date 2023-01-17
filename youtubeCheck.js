@@ -1,3 +1,6 @@
+//Latest upload URL/ID is saved here
+let saved = { url: null };
+
 function youtubeCheck(
   client,
   fs,
@@ -7,6 +10,8 @@ function youtubeCheck(
   playlistId,
   uploadsChannel
 ) {
+  //Fetching the Discord channel where new yt uploads will be posted. 
+  const channel = client.channels.cache.get(uploadsChannel);
 
   // If modifying these scopes, delete your previously saved credentials
   // at ~/.credentials/youtube-nodejs-quickstart.json
@@ -22,8 +27,7 @@ function youtubeCheck(
       return;
     }
     // Authorize a client with the loaded credentials, then call the YouTube API.
-    authorize(JSON.parse(content), getPlaylist);
-    //authorize(JSON.parse(content), getPlaylistItems);
+    authorize(JSON.parse(content), getPlaylistItems);
   });
 
   /**
@@ -107,7 +111,7 @@ function youtubeCheck(
    * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
    */
 
-  //Fetches list of videos inside specified playlist, and posts the URL of the latest video in the designated Discord channel.
+  //
   function getPlaylistItems(auth) {
     var service = google.youtube('v3');
     service.playlistItems.list({
@@ -123,46 +127,19 @@ function youtubeCheck(
       if (videos.length == 0) {
         console.log('No videos found.');
       } else {
-        client.channels.cache.get(uploadsChannel).send(`https://www.youtube.com/watch?v=${videos[0].contentDetails.videoId}`);
-      }
-    });
-  }
-
-  function getPlaylist(auth) {
-    var service = google.youtube('v3');
-    service.playlists.list({
-      auth: auth,
-      part: 'snippet,contentDetails',
-      id: playlistId
-    }, function (err, response) {
-      if (err) {
-        console.log('The API returned an error: ' + err);
-        return;
-      }
-      var playlist = response.data.items;
-      const liveItemCount = playlist[0].contentDetails.itemCount;
-      if (playlist.length == 0) {
-        console.log('No playlist found.');
-      } else {
-        fs.readFile('models/playlistItemCount.json', (err, content) => {
-          if (err) {
-            console.log('Error loading playlist item count file: ' + err);
-            return;
+        let latestUrl = videos[0].contentDetails.videoId;
+        if (!saved.url) {
+          saved.url = latestUrl;
+        } else {
+          if (latestUrl !== saved.url && channel) {
+            let i = 0;
+            while (videos[i].contentDetails.videoId !== saved.url) {
+              channel.send(`https://www.youtube.com/watch?v=${videos[i].contentDetails.videoId}`);
+              i++;
+            }
+            saved.url = latestUrl;
           }
-          //Checks if the playlist itemCount saved on filesystem is different to the live itemCount. If it is, it will call the getPlaylistItems function, 
-          //and replace the previous value inside the itemCount file.
-          if (JSON.parse(content) < liveItemCount) {
-            getPlaylistItems(auth);
-          }
-          if (JSON.parse(content) < liveItemCount || JSON.parse(content) > liveItemCount) {
-            fs.writeFile('models/playlistItemCount.json', liveItemCount.toString(), (err) => {
-              if (err) {
-                console.log('Error loading playlist item count file: ' + err);
-                return;
-              }
-            });  
-          }
-        })
+        }
       }
     });
   }
