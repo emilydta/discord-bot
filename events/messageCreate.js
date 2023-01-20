@@ -3,6 +3,7 @@ import {
     sendPing,
     gudVibez,
     roleReaction,
+    help,
 } from '../commands/index.js';
 
 export default {
@@ -17,6 +18,7 @@ export default {
         if (message.includes('!ping')) { sendPing(interaction, client); return; };
         if (message.includes('!goodbot')) { interaction.reply('<:blobderpy:877534134896066560>'); return; };
         if (message.includes('!rolereaction')) { roleReaction(interaction); return; };
+        if (message.includes('!help')) { help(interaction); return; };
     },
 };
 
