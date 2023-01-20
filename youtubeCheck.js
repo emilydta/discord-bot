@@ -8,7 +8,8 @@ function youtubeCheck(
   google,
   OAuth2,
   playlistId,
-  uploadsChannel
+  uploadsChannel,
+  videosRole
 ) {
   //Fetching the Discord channel where new yt uploads will be posted. 
   const channel = client.channels.cache.get(uploadsChannel);
@@ -134,7 +135,7 @@ function youtubeCheck(
           if (latestUrl !== saved.url && channel) {
             let i = 0;
             while (videos[i].contentDetails.videoId !== saved.url) {
-              channel.send(`https://www.youtube.com/watch?v=${videos[i].contentDetails.videoId}`);
+              channel.send(`<@&${videosRole}> https://www.youtube.com/watch?v=${videos[i].contentDetails.videoId}`);
               i++;
             }
             saved.url = latestUrl;
