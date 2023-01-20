@@ -9,7 +9,7 @@ import { rolesChannel } from '../models/discordChannelIds.js'
 async function roleReaction(interaction) {
     if (interaction.channel.id === rolesChannel) {
         const embed = new EmbedBuilder()
-            .setColor('0x0099FF')
+            .setColor('#9c75ec')
             .setTitle('Select what you would like to be notified about:')
             .setDescription(`${announcementsEmoji} - Announcements\n` +
                 `${uploadsEmoji} - Uploads/Videos\n` +
