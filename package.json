@@ -1,9 +1,12 @@
 {
   "dependencies": {
-    "discord.js": "^14.7.1",
+    "discord.js": "^14.11.0",
     "dotenv": "^16.0.3",
     "google-auth-library": "^8.7.0",
-    "googleapis": "^110.0.0"
+    "googleapis": "^110.0.0",
+    "mongodb": "^5.5.0",
+    "mongoose": "^7.1.2",
+    "pokedex-promise-v2": "^4.1.1"
   },
   "name": "discord-bot",
   "description": "",
