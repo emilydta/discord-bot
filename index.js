@@ -6,7 +6,7 @@ import { google } from 'googleapis';
 import youtubeCheck from './youtubeCheck.js';
 import { uploadsChannel } from './models/discordChannelIds.js';
 import { videosRole } from './models/discordRoleIds.js';
-import pokemon from './pokemon.js';
+
 var OAuth2 = google.auth.OAuth2;
 
 const { NODE_ENV } = process.env;
@@ -53,10 +53,9 @@ events.forEach((event) => {
     ? client.once(event.name, (...args) => event.execute(...args))
     : client.on(event.name, (...args) => event.execute(...args));
 });
-console.log(client.commands)
+
 client.login(token);
 
-//pokemon();
 //youtubeCheck(client, fs, readline, google, OAuth2, playlistId, uploadsChannel, videosRole);
 //setInterval(function() {youtubeCheck(client, fs, readline, google, OAuth2, playlistId, uploadsChannel, videosRole)}, 600000);
 

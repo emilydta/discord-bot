@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import spawnPokemon from '../pokemonGame.js';
 
 export default {
 	name: 'ready',
@@ -7,5 +8,6 @@ export default {
 		mongoose.connect(process.env.DB, {keepAlive: true})
         client.user.setActivity(`Helo :]`);
 		console.log(`Ready! Logged in as ${client.user.tag}`);
+		spawnPokemon(client);
 	},
 };

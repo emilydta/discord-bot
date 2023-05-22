@@ -4,8 +4,8 @@ import roleReaction from "./roleReaction.js";
 import help from "./help.js";
 
 export {
-    sendPing,
-    gudVibez,
-    roleReaction,
-    help,
-  };
+  sendPing,
+  gudVibez,
+  roleReaction,
+  help
+};

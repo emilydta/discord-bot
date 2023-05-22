@@ -1,24 +1,13 @@
-import { Schema, model } from "mongoose"
-
-const pokemonSchema = new Schema({
-    name: {
-        type: String,
-        required: true,
-        lowercase: true
-    },
-    level: Number,
-    found: {
-        type: Date,
-        default: () => Date.now()
-    }
-});
+import { Schema, model } from "mongoose";
+import caughtPokemonSchema from "./caughtPokemonSchema.js";
 
 const userSchema = new Schema({
     discordUserId: {
         type: String,
         required: true
     },
-    pokemon: [pokemonSchema]
+    pokemon: [caughtPokemonSchema],
+    buddyPokemon: caughtPokemonSchema
 });
 
 const User = model("User", userSchema);
