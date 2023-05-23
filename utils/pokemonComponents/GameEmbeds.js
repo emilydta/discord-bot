@@ -36,7 +36,7 @@ const caughtEmbed = (pokemon, userResponse) => {
 }
 
 //Stats
-const pokedexEmbed = (user, pokedex) => {
+const pokedexEmbed = (pokedex) => {
     let total = 0
     for (let i = 1; i < 9; i ++) {
         total = total + pokedex[i]
@@ -44,7 +44,6 @@ const pokedexEmbed = (user, pokedex) => {
 
     return new EmbedBuilder()
         .setColor('#9c75ec')
-        .setTitle(`${user}'s Pokedex`)
         .setDescription(`**Total:** ${total} / 1010`)
         .addFields(
             { name: 'Gen I (Kanto)', value: `${pokedex[1]} / 151`, inline: true },

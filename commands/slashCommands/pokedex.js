@@ -9,14 +9,13 @@ export default {
         .setName('pokedex')
         .setDescription('View your Pokedex progress'),
     async execute(interaction) {
-        const username = interaction.user.username;
         const discordId = interaction.user.id;
         if (interaction.channel.id === pokemonChannel) {
             const user = await User.findOne({ discordUserId: discordId });
             if (user) {
                 const pokedexData = await getPokedexCompletionDataFromDb(discordId)
-                const pdexEmbed = pokedexEmbed(username, pokedexData)
-                await interaction.reply({ embeds: [pdexEmbed] });
+                const pdexEmbed = pokedexEmbed(pokedexData)
+                await interaction.reply({ content: `<@${discordId}>'s Pokedex`, embeds: [pdexEmbed] });
             } else return;
         };
     },
