@@ -3,10 +3,25 @@ const isShinyPokemon = () => {
     return randomTrueOrFalse;
 }
 
-const getRandom = (range) => {
-    //returns random number between 1 and range
-    return Math.floor(Math.random() * (range)) + 1;
+const getRandom = (num) => {
+    //returns random number between 1 and num provided (e.g 25)
+    return Math.floor(Math.random() * (num)) + 1;
 };
+
+//Used in Ready.js to spawn pokemon randomly
+function randomInterval(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function startRandomInterval(func) {
+    const minInterval = 300000;
+    const maxInterval = 960000;
+
+    const intervalTime = randomInterval(minInterval, maxInterval);
+
+    setInterval(func, intervalTime);
+}
+//**************************************** */
 
 const capitalizeFirstLetter = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -46,5 +61,6 @@ export {
     isShinyPokemon,
     getRandom,
     capitalizeFirstLetter,
-    checkGen
+    checkGen,
+    startRandomInterval
 }
