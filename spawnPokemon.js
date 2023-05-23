@@ -37,7 +37,7 @@ function spawnPokemon(client) {
                 message.channel.awaitMessages({
                     filter: collectorFilter,
                     max: 1,
-                    time: 30000,
+                    time: 90000,
                     errors: ['time']
                 }).then((collected) => {
                     message.edit({
