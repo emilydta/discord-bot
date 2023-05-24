@@ -1,21 +1,22 @@
 import { EmbedBuilder } from "discord.js";
 import { capitalizeFirstLetter } from "../helperFunctions.js";
 
+const embedColor = '#9c75ec';
 //Game setup
 const startGameEmbed = new EmbedBuilder()
-    .setColor('#9c75ec')
+    .setColor(embedColor)
     .setTitle('Join the server-wide Pokemon Game?');
 
 const selectPokemonEmbed = new EmbedBuilder()
-    .setColor('#9c75ec')
+    .setColor(embedColor)
     .setTitle('Choose your starter Pokemon!')
 
 const joinedSuccessfulEmbed = new EmbedBuilder()
-    .setColor('#9c75ec')
+    .setColor(embedColor)
     .setTitle('You\'ve successfully joined! Have fun!')
 
 const alreadyJoinedEmbed = new EmbedBuilder()
-    .setColor('#9c75ec')
+    .setColor(embedColor)
     .setTitle('You\'ve already joined!')
 
 
@@ -38,12 +39,12 @@ const caughtEmbed = (pokemon, userResponse) => {
 //Stats
 const pokedexEmbed = (pokedex) => {
     let total = 0
-    for (let i = 1; i < 9; i ++) {
+    for (let i = 1; i < 9; i++) {
         total = total + pokedex[i]
     }
 
     return new EmbedBuilder()
-        .setColor('#9c75ec')
+        .setColor(embedColor)
         .setDescription(`**Total:** ${total} / 1010`)
         .addFields(
             { name: 'Gen I (Kanto)', value: `${pokedex[1]} / 151`, inline: true },
@@ -58,6 +59,32 @@ const pokedexEmbed = (pokedex) => {
         )
 }
 
+const leaderboardEmbed = (data) => {
+    let counter = 1;
+    const embed = new EmbedBuilder()
+        .setTitle('Pokedex Leaderboard')
+        .setColor(embedColor)
+    for (const { name, count } of data) {
+        const place = {
+            1: 'st',
+            2: 'nd',
+            3: 'rd',
+        }
+
+        const trophyObj = {
+            1: '🏆',
+            2: '🥈',
+            3: '🥉'
+        }
+
+        const trophy = counter <= 3 ? trophyObj[counter] : '';
+
+        embed.addFields({ name: `${trophy} ${counter}${counter <= 3 ? place[counter] : 'th'} Place ${trophy}`, value: `<@${name}>: ${count} / 1010` });
+        counter++
+    }
+    return embed;
+}
+
 export {
     startGameEmbed,
     selectPokemonEmbed,
@@ -66,5 +93,6 @@ export {
     spawnEmbed,
     fledEmbed,
     caughtEmbed,
-    pokedexEmbed
+    pokedexEmbed,
+    leaderboardEmbed
 };

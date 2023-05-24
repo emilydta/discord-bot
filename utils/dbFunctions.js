@@ -46,7 +46,49 @@ const getPokedexCompletionDataFromDb = async (userId) => {
     } else console.log('err')
 }
 
+const getTopTenUsersByPokemonCount = async (members) => {
+    try {
+        const usersInDb = await User.find();
+        const discordMembersList = {}
+
+        //Save discord member Id's in an object
+        members.forEach(member => {
+            discordMembersList[member.user.id] = true;
+        })
+        const userPokemonCounts = new Map();
+
+        usersInDb.forEach(user => {
+            //Only includes users who are still in the server
+            if (discordMembersList[user.discordUserId]) {
+                const uniquePokemon = new Set();
+                user.pokemon.forEach(pokemon => uniquePokemon.add(pokemon.name));
+                userPokemonCounts.set(user.discordUserId, uniquePokemon.size);
+            }
+        });
+
+        // Sort the users based on the count of unique Pokémon in descending order
+        const sortedUsers = Array.from(userPokemonCounts.entries()).sort((a, b) => b[1] - a[1]);
+
+        // Output the users in order from most caught Pokémon to least
+        let finalList = [];
+        let counter = 0;
+        for (const [name, count] of sortedUsers) {
+            finalList.push({ name, count })
+            counter++
+
+            if (counter === 10) {
+                break
+            }
+        }
+        return finalList;
+    } catch (err) {
+        // Handle error
+        console.error(err);
+    }
+}
+
 export {
     addPokemonToUserDb,
-    getPokedexCompletionDataFromDb
+    getPokedexCompletionDataFromDb,
+    getTopTenUsersByPokemonCount
 }
