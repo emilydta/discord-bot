@@ -16,7 +16,7 @@ export default {
                 const pokedexData = await getPokedexCompletionDataFromDb(discordId)
                 const pdexEmbed = pokedexEmbed(pokedexData)
                 await interaction.reply({ content: `<@${discordId}>'s Pokedex`, embeds: [pdexEmbed] });
-            } else return;
+            } else return interaction.reply({ content: `You don't have a Pokedex! Type \`/startgame\` to join the server-wide Pokemon game!`, ephemeral: true});
         };
     },
 };

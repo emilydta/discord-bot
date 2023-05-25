@@ -26,6 +26,7 @@ const spawnEmbed = (url) => {
         .setTitle('Guess the Pokemon before it flees!')
         .setDescription('Type it\'s name below to catch it!')
         .setImage(url)
+        .setFooter({text: `Type /startgame in the #Pokemon channel to join`})
 }
 const fledEmbed = (pokemon) => {
     return new EmbedBuilder()
@@ -64,6 +65,12 @@ const leaderboardEmbed = (data) => {
     const embed = new EmbedBuilder()
         .setTitle('Pokedex Leaderboard')
         .setColor(embedColor)
+
+    if (data.length === 0) {
+        embed.setDescription('No players yet!');
+        return embed
+    } 
+
     for (const { name, count } of data) {
         const place = {
             1: 'st',

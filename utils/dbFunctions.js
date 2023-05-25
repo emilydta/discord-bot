@@ -1,8 +1,13 @@
 import User from "../models/schemas/userSchema.js";
 import { checkGen } from "./helperFunctions.js";
 
-const addPokemonToUserDb = async (userId, pokemonName, pokemonId, nature, shinyStatus) => {
+const getUserFromDb = async (userId) => {
     const user = await User.findOne({ discordUserId: userId });
+    return user;
+}
+
+const addPokemonToUserDb = async (userId, pokemonName, pokemonId, nature, shinyStatus) => {
+    const user = await getUserFromDb(userId);
     if (user) {
         const newPokemon = {
             name: pokemonName.toLowerCase(),
@@ -19,7 +24,7 @@ const addPokemonToUserDb = async (userId, pokemonName, pokemonId, nature, shinyS
 }
 
 const getPokedexCompletionDataFromDb = async (userId) => {
-    const user = await User.findOne({ discordUserId: userId });
+    const user = await getUserFromDb(userId);
 
     if (user) {
         let pokemonDocs = [];
@@ -46,25 +51,35 @@ const getPokedexCompletionDataFromDb = async (userId) => {
     } else console.log('err')
 }
 
+const makeServerMembersObj = async (members) => {
+    const discordMembersList = {};
+    members.forEach(member => {
+        discordMembersList[member.user.id] = true;
+    })
+    return discordMembersList;
+}
+
+const getUserUniquePokemonCount = async (user, membersList, pokemonCountsMap) => {
+    //Only includes users who are still in the server
+    if (membersList[user.discordUserId]) {
+        const uniquePokemon = new Set();
+        user.pokemon.forEach(pokemon => uniquePokemon.add(pokemon.name));
+        pokemonCountsMap.set(user.discordUserId, uniquePokemon.size);
+    }
+}
+
 const getTopTenUsersByPokemonCount = async (members) => {
     try {
         const usersInDb = await User.find();
-        const discordMembersList = {}
+        const discordMembersList = await makeServerMembersObj(members);
 
-        //Save discord member Id's in an object
-        members.forEach(member => {
-            discordMembersList[member.user.id] = true;
-        })
         const userPokemonCounts = new Map();
 
-        usersInDb.forEach(user => {
-            //Only includes users who are still in the server
-            if (discordMembersList[user.discordUserId]) {
-                const uniquePokemon = new Set();
-                user.pokemon.forEach(pokemon => uniquePokemon.add(pokemon.name));
-                userPokemonCounts.set(user.discordUserId, uniquePokemon.size);
-            }
-        });
+        if (usersInDb) {
+            usersInDb.forEach(user => {
+                getUserUniquePokemonCount(user, discordMembersList, userPokemonCounts);
+            });
+        } else return [];
 
         // Sort the users based on the count of unique Pokémon in descending order
         const sortedUsers = Array.from(userPokemonCounts.entries()).sort((a, b) => b[1] - a[1]);
