@@ -1,5 +1,10 @@
 import User from "../models/schemas/userSchema.js";
 import { checkGen } from "./helperFunctions.js";
+import {
+    pokemonLevelsAndRolesList,
+    pokemonRolesList,
+    pokemonRolesAndStringsList
+} from "../models/datasets/pokemonLists.js";
 
 const getUserFromDb = async (userId) => {
     const user = await User.findOne({ discordUserId: userId });
@@ -51,12 +56,62 @@ const getPokedexCompletionDataFromDb = async (userId) => {
     } else console.log('err')
 }
 
-const makeServerMembersObj = async (members) => {
-    const discordMembersList = {};
-    members.forEach(member => {
-        discordMembersList[member.user.id] = true;
-    })
-    return discordMembersList;
+const getUserAllPokemonCount = async (user) => {
+    // !! If being used generally, add members parameter to ensure you can check if the user is in the server
+
+    if (user) {
+        const pokemonArray = [];
+        user.pokemon.forEach(pokemon => pokemonArray.push(pokemon.name));
+        return pokemonArray.length
+    };
+}
+
+const findRoleInServer = async (guild, newRole) => {
+    const role = guild.roles.cache.find(r => r.id === newRole);
+    return role;
+}
+
+const addPokemonRole = async (userId, guild, channelId, client) => {
+    try {
+        const user = await guild.members.cache.get(userId);
+        const userInDb = await getUserFromDb(userId);
+        const userPokemonCount = await getUserAllPokemonCount(userInDb);
+
+        //New role to add if user reaches count milestone
+        const newRole = pokemonLevelsAndRolesList[userPokemonCount];
+
+        //Adds user roles from user cache to an array as strings (excludes everyone role)
+        let userRoles = await user.roles.cache
+            .filter((roles) => roles.id !== process.env.GUILD_ID)
+            .map((role) => role.toString());
+
+        //Removes non-number chars from array items
+        for (let i = 0; i < userRoles.length; i++) {
+            userRoles[i] = userRoles[i].replace(/\D/g, '');
+        }
+
+        if (newRole) {
+            const roleToBeAdded = await findRoleInServer(guild, newRole);
+
+            //Iterates through list of user's role ID's and checks if any are in the pokemonRolesList
+            //Removes the role if there is a match
+            for (let i = 0; i < userRoles.length; i++) {
+                let roleId = pokemonRolesList[userRoles[i]];
+                if (roleId && roleId !== roleToBeAdded.id) {
+                    let oldRole = await findRoleInServer(guild, roleId);
+                    await user.roles.remove(oldRole);
+                }
+            }
+            //Adds the new role to the user
+            await user.roles.add(roleToBeAdded);
+
+            const channel = await client.channels.fetch(channelId);
+            channel.send(`Congratulations <@${userId}>! You have earned the **${pokemonRolesAndStringsList[newRole]}** title!`)
+        }
+    } catch (err) {
+        // Handle error
+        console.error(err);
+    }
 }
 
 const getUserUniquePokemonCount = async (user, membersList, pokemonCountsMap) => {
@@ -66,6 +121,14 @@ const getUserUniquePokemonCount = async (user, membersList, pokemonCountsMap) =>
         user.pokemon.forEach(pokemon => uniquePokemon.add(pokemon.name));
         pokemonCountsMap.set(user.discordUserId, uniquePokemon.size);
     }
+}
+
+const makeServerMembersObj = async (members) => {
+    const discordMembersList = {};
+    members.forEach(member => {
+        discordMembersList[member.user.id] = true;
+    })
+    return discordMembersList;
 }
 
 const getTopTenUsersByPokemonCount = async (members) => {
@@ -105,5 +168,6 @@ const getTopTenUsersByPokemonCount = async (members) => {
 export {
     addPokemonToUserDb,
     getPokedexCompletionDataFromDb,
-    getTopTenUsersByPokemonCount
+    getTopTenUsersByPokemonCount,
+    addPokemonRole
 }

@@ -2,7 +2,7 @@ import Pokedex from 'pokedex-promise-v2';
 import { tallGrassChannel } from './models/discordChannelIds.js';
 import { isShinyPokemon, getRandom } from './utils/helperFunctions.js';
 import { spawnEmbed, fledEmbed, caughtEmbed } from './utils/pokemonComponents/GameEmbeds.js';
-import { addPokemonToUserDb } from './utils/dbFunctions.js';
+import { addPokemonToUserDb, addPokemonRole } from './utils/dbFunctions.js';
 import { pokemonNatures } from './models/datasets/pokemonLists.js';
 
 import User from './models/schemas/userSchema.js';
@@ -11,10 +11,12 @@ const P = new Pokedex();
 
 function spawnPokemon(client) {
     const channel = client.channels.cache.get(tallGrassChannel);
+    const guild = client.guilds.cache.get(process.env.GUILD_ID);
+
     const pokedexLength = 1010;
     const numberOfNatures = 25;
 
-    P.getPokemonByName(getRandom(pokedexLength)) // with Promise
+    P.getPokemonByName('jolteon') // with Promise
         .then((response) => {
             const shiny = isShinyPokemon();
             const nature = pokemonNatures[getRandom(numberOfNatures)];
@@ -43,7 +45,10 @@ function spawnPokemon(client) {
                     message.edit({
                         embeds: [caughtEmbed(pokemonName, collected)]
                     });
-                    addPokemonToUserDb(collected.first().author.id, pokemonName, pokemonId, nature, shiny)
+                    const userId = collected.first().author.id;
+                    addPokemonToUserDb(userId, pokemonName, pokemonId, nature, shiny).then((response) => {
+                        addPokemonRole(userId, guild, tallGrassChannel, client);
+                    });
                 }).catch((collected) => {
                     message.edit({
                         embeds: [fledEmbed(pokemonName)]

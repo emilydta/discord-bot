@@ -1,3 +1,14 @@
+import {
+    rookieRole,
+    juniorRole,
+    skilledRole,
+    expertRole,
+    eliteRole,
+    veteranRole,
+    legendaryRole,
+    whispererRole
+} from "../discordRoleIds.js";
+
 const starterPokemonGenList = {
     bulbasaur: 1,
     charmander: 1,
@@ -53,7 +64,52 @@ const pokemonNatures = {
     25: "Quirky",
 };
 
+const pokemonLevelsAndRolesList = {
+    2: rookieRole,
+    10: juniorRole,
+    30: skilledRole,
+    50: expertRole,
+    100: eliteRole,
+    200: veteranRole,
+    500: legendaryRole,
+    1000: whispererRole
+}
+
+const pokemonRolesList = {
+    [rookieRole]: rookieRole,
+    [juniorRole]: juniorRole,
+    [skilledRole]: skilledRole,
+    [expertRole]: expertRole,
+    [eliteRole]: eliteRole,
+    [veteranRole]: veteranRole,
+    [legendaryRole]: legendaryRole,
+    [whispererRole]: whispererRole
+}
+
+const rookie = 'Rookie Trainer';
+const junior = 'Junior Trainer';
+const skilled = 'Skilled Trainer';
+const expert = 'Expert Trainer';
+const elite = 'Elite Trainer';
+const veteran = 'Veteran Trainer';
+const legendary = 'Legendary Trainer';
+const whisperer = 'Pokémon Whisperer';
+
+const pokemonRolesAndStringsList = {
+    [rookieRole]: rookie,
+    [juniorRole]: junior,
+    [skilledRole]: skilled,
+    [expertRole]: expert,
+    [eliteRole]: elite,
+    [veteranRole]: veteran,
+    [legendaryRole]: legendary,
+    [whispererRole]: whisperer
+}
+
 export {
     starterPokemonGenList,
-    pokemonNatures
+    pokemonNatures,
+    pokemonLevelsAndRolesList,
+    pokemonRolesList,
+    pokemonRolesAndStringsList
 }
