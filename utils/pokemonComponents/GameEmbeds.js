@@ -1,5 +1,4 @@
 import { EmbedBuilder } from "discord.js";
-import { capitalizeFirstLetter } from "../helperFunctions.js";
 
 const embedColor = '#9c75ec';
 //Game setup
@@ -26,15 +25,15 @@ const spawnEmbed = (url) => {
         .setTitle('Guess the Pokemon before it flees!')
         .setDescription('Type it\'s name below to catch it!')
         .setImage(url)
-        .setFooter({text: `Type /startgame in the #Pokemon channel to join`})
+        .setFooter({ text: `Type /startgame in the #Pokemon channel to join` })
 }
 const fledEmbed = (pokemon) => {
     return new EmbedBuilder()
-        .setDescription(`${capitalizeFirstLetter(pokemon)} fled!`)
+        .setDescription(`${pokemon} fled!`)
 }
 const caughtEmbed = (pokemon, userResponse) => {
     return new EmbedBuilder()
-        .setDescription(`${userResponse.first().author} caught ${capitalizeFirstLetter(pokemon)}!`)
+        .setDescription(`${userResponse.first().author} caught ${pokemon}!`)
 }
 
 //Stats
@@ -69,7 +68,7 @@ const leaderboardEmbed = (data) => {
     if (data.length === 0) {
         embed.setDescription('No players yet!');
         return embed
-    } 
+    }
 
     for (const { name, count } of data) {
         const place = {
@@ -85,8 +84,9 @@ const leaderboardEmbed = (data) => {
         }
 
         const trophy = counter <= 3 ? trophyObj[counter] : '';
+        const suffix = counter <= 3 ? place[counter] : 'th';
 
-        embed.addFields({ name: `${trophy} ${counter}${counter <= 3 ? place[counter] : 'th'} Place ${trophy}`, value: `<@${name}>: ${count} / 1010` });
+        embed.addFields({ name: `${trophy} ${counter}${suffix} Place ${trophy}`, value: `<@${name}>: ${count} / 1010` });
         counter++
     }
     return embed;

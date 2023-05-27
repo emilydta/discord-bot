@@ -3,76 +3,77 @@ import { StringSelectMenuOptionBuilder } from "discord.js";
 const starterPokemon = [
     new StringSelectMenuOptionBuilder()
         .setLabel('Bulbasaur')
-        .setValue('bulbasaur'),
+        .setValue('Bulbasaur'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Charmander')
-        .setValue('charmander'),
+        .setValue('Charmander'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Squirtle')
-        .setValue('squirtle'),
+        .setValue('Squirtle'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Chikorita')
-        .setValue('chikorita'),
+        .setValue('Chikorita'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Cyndaquil')
-        .setValue('cyndaquil'),
+        .setValue('Cyndaquil'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Totodile')
-        .setValue('totodile'),
+        .setValue('Totodile'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Treeko')
-        .setValue('treeko'),
+        .setValue('Treeko'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Torchic')
-        .setValue('torchic'),
+        .setValue('Torchic'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Mudkip')
-        .setValue('mudkip'),
+        .setValue('Mudkip'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Turtwig')
-        .setValue('turtwig'),
+        .setValue('Turtwig'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Chimchar')
-        .setValue('chimchar'),
+        .setValue('Chimchar'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Piplup')
-        .setValue('piplup'),
+        .setValue('Piplup'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Snivy')
-        .setValue('snivy'),
+        .setValue('Snivy'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Tepig')
-        .setValue('tepig'),
+        .setValue('Tepig'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Oshawott')
-        .setValue('oshawott'),
+        .setValue('Oshawott'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Chespin')
-        .setValue('chespin'),
+        .setValue('Chespin'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Fennekin')
-        .setValue('fennekin'),
+        .setValue('Fennekin'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Froakie')
-        .setValue('froakie'),
+        .setValue('Froakie'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Rowlet')
-        .setValue('rowlet'),
+        .setValue('Rowlet'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Litten')
-        .setValue('litten'),
+        .setValue('Litten'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Popplio')
-        .setValue('popplio'),
+        .setValue('Popplio'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Grookey')
-        .setValue('grookey'),
+        .setValue('Grookey'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Scorbunny')
-        .setValue('scorbunny'),
+        .setValue('Scorbunny'),
     new StringSelectMenuOptionBuilder()
         .setLabel('Sobble')
-        .setValue('sobble'),
-]
+        .setValue('Sobble'),
+];
+
 
 export default starterPokemon;

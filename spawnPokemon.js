@@ -1,13 +1,36 @@
 import Pokedex from 'pokedex-promise-v2';
 import { tallGrassChannel } from './models/discordChannelIds.js';
-import { isShinyPokemon, getRandom } from './utils/helperFunctions.js';
+import { isShinyPokemon, getRandom, capitalizeFirstLetter } from './utils/helperFunctions.js';
 import { spawnEmbed, fledEmbed, caughtEmbed } from './utils/pokemonComponents/GameEmbeds.js';
 import { addPokemonToUserDb, addPokemonRole } from './utils/dbFunctions.js';
-import { pokemonNatures } from './models/datasets/pokemonLists.js';
+import { pokemonNatures, pokemonNamesWithSpecialChars, pokemonNamesThatNeedSpaces } from './models/datasets/pokemonLists.js';
 
 import User from './models/schemas/userSchema.js';
 
 const P = new Pokedex();
+
+const formatPokemonName = (name) => {
+    if (pokemonNamesWithSpecialChars[name]) {
+        return pokemonNamesWithSpecialChars[name];
+    }
+    else if (pokemonNamesThatNeedSpaces[name]) {
+        return pokemonNamesThatNeedSpaces[name];
+    }
+    else return name;
+}
+
+const checkAnswerForMime = (userMsgContent) => {
+    const mimeNameArray = ['mr. mime', 'mr mime', 'mime jr', 'mime jr.'];
+
+    for (let i = 0; i < mimeNameArray.length; i++) {
+        let mimeName = mimeNameArray[i];
+
+        if (mimeName === userMsgContent) {
+            return true;
+        }
+    }
+    return false;
+}
 
 function spawnPokemon(client) {
     const channel = client.channels.cache.get(tallGrassChannel);
@@ -16,12 +39,13 @@ function spawnPokemon(client) {
     const pokedexLength = 1010;
     const numberOfNatures = 25;
 
-    P.getPokemonByName('jolteon') // with Promise
+    P.getPokemonByName(getRandom(pokedexLength)) // with Promise
         .then((response) => {
             const shiny = isShinyPokemon();
             const nature = pokemonNatures[getRandom(numberOfNatures)];
 
-            const pokemonName = response.name;
+            const pokemonApiName = response.name;
+            const pokemonName = capitalizeFirstLetter(formatPokemonName(pokemonApiName));
             const pokemonId = response.id
             const pokemonImg = response.sprites.other['official-artwork'].front_default;
             const shinyPokemonImg = response.sprites.other['official-artwork'].front_shiny;
@@ -29,7 +53,16 @@ function spawnPokemon(client) {
             // Conditions for Pokemon to be caught
             const collectorFilter = async (userResponse) => {
                 const userExists = await User.exists({ discordUserId: userResponse.author.id })
-                return userExists && pokemonName.toLowerCase() === userResponse.content.toLowerCase();
+
+                if (userExists) {
+                    //Special case for mr mime name
+                    if (pokemonName.toLowerCase() === 'mr. mime' || pokemonName.toLowerCase() === 'mime jr.') {
+                        const answer = checkAnswerForMime(userResponse.content.toLowerCase());
+                        return answer;
+                    }
+
+                    return pokemonName.toLowerCase() === userResponse.content.toLowerCase();
+                }
             };
 
             channel.send({
@@ -46,7 +79,7 @@ function spawnPokemon(client) {
                         embeds: [caughtEmbed(pokemonName, collected)]
                     });
                     const userId = collected.first().author.id;
-                    addPokemonToUserDb(userId, pokemonName, pokemonId, nature, shiny).then((response) => {
+                    addPokemonToUserDb(userId, pokemonName, pokemonApiName, pokemonId, nature, shiny).then((response) => {
                         addPokemonRole(userId, guild, tallGrassChannel, client);
                     });
                 }).catch((collected) => {
