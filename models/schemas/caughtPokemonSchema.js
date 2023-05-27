@@ -4,7 +4,14 @@ const caughtPokemonSchema = new Schema({
     name: {
         type: String,
         required: true,
-        lowercase: true
+    },
+    apiName: {
+        type: String,
+        required: true,
+    },
+    idNumber: {
+        type: Number,
+        required: true
     },
     level: {
         type: Number,
@@ -12,7 +19,7 @@ const caughtPokemonSchema = new Schema({
     },
     generation: {
         type: Number,
-        required: true
+        required: true,
     },
     nature: {
         type: String,
@@ -22,7 +29,7 @@ const caughtPokemonSchema = new Schema({
         type: Date,
         required: true,
         default: Date.now,
-        immutable: true
+        immutable: true,
     },
     shiny: {
         type: Boolean,

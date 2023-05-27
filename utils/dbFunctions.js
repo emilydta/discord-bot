@@ -11,11 +11,13 @@ const getUserFromDb = async (userId) => {
     return user;
 }
 
-const addPokemonToUserDb = async (userId, pokemonName, pokemonId, nature, shinyStatus) => {
+const addPokemonToUserDb = async (userId, pokemonName, pokemonApiName, pokemonId, nature, shinyStatus) => {
     const user = await getUserFromDb(userId);
     if (user) {
         const newPokemon = {
-            name: pokemonName.toLowerCase(),
+            name: pokemonName,
+            apiName: pokemonApiName,
+            idNumber: pokemonId,
             level: 1,
             generation: checkGen(pokemonId),
             nature: nature,
@@ -48,7 +50,7 @@ const getPokedexCompletionDataFromDb = async (userId) => {
         for (const entry of user.pokemon) {
             pokemonDocs.push(entry)
         }
-        const uniquePokemon = [...new Map(pokemonDocs.map(entry => [entry.name, entry])).values()]
+        const uniquePokemon = [...new Map(pokemonDocs.map(entry => [entry.idNumber, entry])).values()]
         for (const entry of uniquePokemon) {
             genTally[entry.generation]++
         }
@@ -61,7 +63,7 @@ const getUserAllPokemonCount = async (user) => {
 
     if (user) {
         const pokemonArray = [];
-        user.pokemon.forEach(pokemon => pokemonArray.push(pokemon.name));
+        user.pokemon.forEach(pokemon => pokemonArray.push(pokemon.idNumber));
         return pokemonArray.length
     };
 }
@@ -118,7 +120,7 @@ const getUserUniquePokemonCount = async (user, membersList, pokemonCountsMap) =>
     //Only includes users who are still in the server
     if (membersList[user.discordUserId]) {
         const uniquePokemon = new Set();
-        user.pokemon.forEach(pokemon => uniquePokemon.add(pokemon.name));
+        user.pokemon.forEach(pokemon => uniquePokemon.add(pokemon.idNumber));
         pokemonCountsMap.set(user.discordUserId, uniquePokemon.size);
     }
 }
