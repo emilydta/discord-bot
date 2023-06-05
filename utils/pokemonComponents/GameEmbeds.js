@@ -1,10 +1,31 @@
 import { EmbedBuilder } from "discord.js";
+import { tallGrassChannel, pokemonChannel } from "../../models/discordChannelIds.js";
+
+const gameInstructionsHeading = '🌟 Server-wide Pokémon Game: What is this?'
+const gameInstructions = `
+📋 **How to Play:**
+
+    1️⃣ Press the "YES" button to choose your starter Pokémon and embark on your Pokémon adventure! **You won't be able to play unless you do this first!**
+
+    2️⃣ Keep an eye on the <#${tallGrassChannel}> channel. This is where Pokémon will appear!
+
+    3️⃣ When a Pokémon appears, type the Pokémon's name to catch it. Your typing speed and Pokémon knowledge will be your keys to victory!
+
+    4️⃣ Head over to the <#${pokemonChannel}> channel to check your progress with the \`/pokedex\` command, or use the \`/leaderboard\` command to see the server's top 10 trainers.
+    
+    🏆 **Become a Pokémon Champion:**
+Catch every Pokemon to earn the title of Pokemon Champion! Good luck, and may your journey be filled with thrilling captures and legendary encounters!`;
 
 const embedColor = '#9c75ec';
 //Game setup
 const startGameEmbed = new EmbedBuilder()
     .setColor(embedColor)
     .setTitle('Join the server-wide Pokemon Game?');
+
+const instructionsEmbed = new EmbedBuilder()
+    .setColor(embedColor)
+    .setTitle(gameInstructionsHeading)
+    .setDescription(gameInstructions)
 
 const selectPokemonEmbed = new EmbedBuilder()
     .setColor(embedColor)
@@ -94,6 +115,7 @@ const leaderboardEmbed = (data) => {
 
 export {
     startGameEmbed,
+    instructionsEmbed,
     selectPokemonEmbed,
     joinedSuccessfulEmbed,
     alreadyJoinedEmbed,
@@ -103,3 +125,4 @@ export {
     pokedexEmbed,
     leaderboardEmbed
 };
+
