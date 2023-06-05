@@ -2,7 +2,7 @@ import Pokedex from 'pokedex-promise-v2';
 import { tallGrassChannel } from './models/discordChannelIds.js';
 import { isShinyPokemon, getRandom, capitalizeFirstLetter } from './utils/helperFunctions.js';
 import { spawnEmbed, fledEmbed, caughtEmbed } from './utils/pokemonComponents/GameEmbeds.js';
-import { addPokemonToUserDb, addPokemonRole } from './utils/dbFunctions.js';
+import { addPokemonToUserDb, addPokemonRole, addCompletePokedexRole } from './utils/dbFunctions.js';
 import { pokemonNatures, pokemonNamesWithSpecialChars, pokemonNamesThatNeedSpaces } from './models/datasets/pokemonLists.js';
 
 import User from './models/schemas/userSchema.js';
@@ -72,7 +72,7 @@ function spawnPokemon(client) {
                 message.channel.awaitMessages({
                     filter: collectorFilter,
                     max: 1,
-                    time: 90000,
+                    time: 30000,
                     errors: ['time']
                 }).then((collected) => {
                     message.edit({
@@ -81,6 +81,7 @@ function spawnPokemon(client) {
                     const userId = collected.first().author.id;
                     addPokemonToUserDb(userId, pokemonName, pokemonApiName, pokemonId, nature, shiny).then((response) => {
                         addPokemonRole(userId, guild, tallGrassChannel, client);
+                        addCompletePokedexRole(userId, guild, tallGrassChannel, client);
                     });
                 }).catch((collected) => {
                     message.edit({

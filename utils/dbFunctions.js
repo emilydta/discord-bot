@@ -5,6 +5,9 @@ import {
     pokemonRolesList,
     pokemonRolesAndStringsList
 } from "../models/datasets/pokemonLists.js";
+import { championRole } from "../models/discordRoleIds.js";
+
+const pokedexLength = 1010;
 
 const getUserFromDb = async (userId) => {
     const user = await User.findOne({ discordUserId: userId });
@@ -31,31 +34,35 @@ const addPokemonToUserDb = async (userId, pokemonName, pokemonApiName, pokemonId
 }
 
 const getPokedexCompletionDataFromDb = async (userId) => {
-    const user = await getUserFromDb(userId);
+    try {
+        const user = await getUserFromDb(userId);
 
-    if (user) {
-        let pokemonDocs = [];
-        let genTally = {
-            1: 0,
-            2: 0,
-            3: 0,
-            4: 0,
-            5: 0,
-            6: 0,
-            7: 0,
-            8: 0,
-            9: 0
-        }
+        if (user) {
+            let pokemonDocs = [];
+            let genTally = {
+                1: 0,
+                2: 0,
+                3: 0,
+                4: 0,
+                5: 0,
+                6: 0,
+                7: 0,
+                8: 0,
+                9: 0
+            }
 
-        for (const entry of user.pokemon) {
-            pokemonDocs.push(entry)
+            for (const entry of user.pokemon) {
+                pokemonDocs.push(entry)
+            }
+            const uniquePokemon = [...new Map(pokemonDocs.map(entry => [entry.idNumber, entry])).values()]
+            for (const entry of uniquePokemon) {
+                genTally[entry.generation]++
+            }
+            return genTally;
         }
-        const uniquePokemon = [...new Map(pokemonDocs.map(entry => [entry.idNumber, entry])).values()]
-        for (const entry of uniquePokemon) {
-            genTally[entry.generation]++
-        }
-        return genTally;
-    } else console.log('err')
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 const getUserAllPokemonCount = async (user) => {
@@ -73,6 +80,19 @@ const findRoleInServer = async (guild, newRole) => {
     return role;
 }
 
+const getUserRoles = async (user) => {
+    //Adds user roles from user cache to an array as strings (excludes everyone role)
+    let userRoles = await user.roles.cache
+        .filter((roles) => roles.id !== process.env.GUILD_ID)
+        .map((role) => role.toString());
+
+    //Removes non-number chars from array items
+    for (let i = 0; i < userRoles.length; i++) {
+        userRoles[i] = userRoles[i].replace(/\D/g, '');
+    }
+    return userRoles;
+}
+
 const addPokemonRole = async (userId, guild, channelId, client) => {
     try {
         const user = await guild.members.cache.get(userId);
@@ -82,15 +102,7 @@ const addPokemonRole = async (userId, guild, channelId, client) => {
         //New role to add if user reaches count milestone
         const newRole = pokemonLevelsAndRolesList[userPokemonCount];
 
-        //Adds user roles from user cache to an array as strings (excludes everyone role)
-        let userRoles = await user.roles.cache
-            .filter((roles) => roles.id !== process.env.GUILD_ID)
-            .map((role) => role.toString());
-
-        //Removes non-number chars from array items
-        for (let i = 0; i < userRoles.length; i++) {
-            userRoles[i] = userRoles[i].replace(/\D/g, '');
-        }
+        const userRoles = await getUserRoles(user);
 
         if (newRole) {
             const roleToBeAdded = await findRoleInServer(guild, newRole);
@@ -167,9 +179,39 @@ const getTopTenUsersByPokemonCount = async (members) => {
     }
 }
 
+const addCompletePokedexRole = async (userId, guild, channelId, client) => {
+    try {
+        const user = await guild.members.cache.get(userId);
+        const userInDb = await getUserFromDb(userId);
+        const userRoles = await getUserRoles(user);
+        const uniquePokemon = new Set();
+
+        for (let i = 0; i < userRoles.length; i++) {
+            if (userRoles[i] === championRole) {
+                return;
+            }
+        }
+
+        if (user && userInDb) {
+            userInDb.pokemon.forEach(pokemon => uniquePokemon.add(pokemon.idNumber));
+        } else return [];
+
+        if (uniquePokemon.size === pokedexLength) {
+            //New role to add if user reaches count milestone
+            const roleToBeAdded = await findRoleInServer(guild, championRole);
+            await user.roles.add(roleToBeAdded);
+            const channel = await client.channels.fetch(channelId);
+            channel.send(`Congratulations <@${userId}>! You have caught every Pokémon and earned the **Pokémon Champion** title!`)
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export {
     addPokemonToUserDb,
     getPokedexCompletionDataFromDb,
     getTopTenUsersByPokemonCount,
-    addPokemonRole
+    addPokemonRole,
+    addCompletePokedexRole
 }

@@ -10,10 +10,8 @@ const veteranRole = '1111076274576826369';
 const legendaryRole = '1111076321368481792';
 const whispererRole = '1111076521159962644';
 
-
 //Pokemon Dex Completion Roles
-
-
+const championRole = '1115159179489980479';
 
 export {
     videosRole,
@@ -24,5 +22,6 @@ export {
     eliteRole,
     veteranRole,
     legendaryRole,
-    whispererRole
+    whispererRole,
+    championRole
 }
