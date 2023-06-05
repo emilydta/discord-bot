@@ -143,6 +143,7 @@ const pokemonNamesThatNeedSpaces = {
     'iron-valiant': 'iron Valiant',
     'walking-wake': 'walking Wake',
     'iron-leaves': 'iron Leaves',
+    'giratina-altered': 'giratina'
 };
 
 export {
