@@ -145,9 +145,6 @@ const pokemonNamesThatNeedSpaces = {
     'iron-leaves': 'iron Leaves',
 };
 
-
-
-
 export {
     starterPokemonDataList,
     pokemonNatures,

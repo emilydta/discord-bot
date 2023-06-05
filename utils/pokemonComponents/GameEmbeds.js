@@ -39,7 +39,7 @@ const caughtEmbed = (pokemon, userResponse) => {
 //Stats
 const pokedexEmbed = (pokedex) => {
     let total = 0
-    for (let i = 1; i < 9; i++) {
+    for (let i = 1; i <= 9; i++) {
         total = total + pokedex[i]
     }
 

@@ -1,5 +1,5 @@
 const isShinyPokemon = () => {
-    const randomTrueOrFalse = Math.random() < 0.00001 ? true : false;
+    const randomTrueOrFalse = Math.random() < 0.0001 ? true : false;
     return randomTrueOrFalse;
 }
 
